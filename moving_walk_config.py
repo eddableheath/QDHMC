@@ -25,10 +25,11 @@ def compute_graph_bounds(lattice_basis, total_points):
     else:
         return bound
 
+
 # Multiprocessing parameters
 cores = 4
 
-# Lattice paramaters ---------------------------------
+# Lattice parameters ---------------------------------
 dimension = 2
 lattice_type = 'hnf'
 lattice_num = 0
@@ -41,12 +42,12 @@ lattice_basis = np.genfromtxt(
 # Walk parameters
 graph_bounds = compute_graph_bounds(lattice_basis, 31**2)
 dist = np.genfromtxt(
-    'run_data/dist.csv',
+    'run_data/dist_2.csv',
     delimiter=',',
     dtype=None
 )
 coords = np.genfromtxt(
-    'run_data/coords.csv',
+    'run_data/coords_2.csv',
     delimiter=',',
     dtype=None
 )
@@ -54,4 +55,4 @@ coords = np.genfromtxt(
 # Model parameters -----------------------------------
 gamma_mark = 1
 
-number_of_runs = 1000
+number_of_runs = 1

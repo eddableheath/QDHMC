@@ -25,7 +25,7 @@ def gen_generic_prob_density(dimension, graph_bounds, gamma):
     return coords, np.absolute(qf.prop_comp(adj_mat, gamma)[(adj_mat.shape[0]-1)//2])**2
 
 
-def compute_graph_bounds(lattice_basis, total_points):
+def compute_graph_bounds(lattice_basis, total_points, sub_dim):
     """
         Compute the range that the graph walk should be to be reasonably computable. Given a total number of points it
         will give bounds that have either approximately those number of points spread over the correct dimensions or
@@ -36,7 +36,7 @@ def compute_graph_bounds(lattice_basis, total_points):
     """
     dimension = lattice_basis.shape[0]
     integer_bounds = math.ceil(dimension * math.log2(dimension) + math.log2(np.linalg.norm(lattice_basis)))
-    bound = math.floor(total_points ** (1/float(dimension)) / 2)
+    bound = math.floor(total_points ** (1/float(sub_dim)) / 2)
     if bound > integer_bounds:
         return integer_bounds
     else:
@@ -61,17 +61,35 @@ def write_dist(dimension, gamma_marker):
         dimension,
         compute_graph_bounds(
             arbitrary_basis,
-            31**2
+            31**2, 2
         ),
         gamma_marker * 0.5
     )
     np.savetxt(
-        'dist_'+str(dimension)+'.csv',
+        'distributions/dist_'+str(dimension)+'_2.csv',
         dist,
         delimiter=','
     )
     np.savetxt(
-        'coords_'+str(dimension)+'.csv',
+        'distributions/coords_'+str(dimension)+'_2.csv',
+        coords,
+        delimiter=','
+    )
+    coords, dist = gen_generic_prob_density(
+        dimension,
+        compute_graph_bounds(
+            arbitrary_basis,
+            31 ** 2, 3
+        ),
+        gamma_marker * 0.5
+    )
+    np.savetxt(
+        'distributions/dist_' + str(dimension) + '_3.csv',
+        dist,
+        delimiter=','
+    )
+    np.savetxt(
+        'distributions/coords_' + str(dimension) + '_3.csv',
         coords,
         delimiter=','
     )

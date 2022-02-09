@@ -93,7 +93,7 @@ def multi_run(pars, it):
         return 1
     else:
         new_path = pars['path'] + '/' + str(it)
-        os.mkdir(path)
+        os.mkdir(new_path)
         experiment = WalkExperiment(
             pars['basis'],
             pars['prob_density'],
@@ -104,14 +104,25 @@ def multi_run(pars, it):
             pars['cost_choice']
         )
         experiment.run()
-        np.savetxt(new_path+'/ints.csv', X=np.array(experiment.markov_chain), delimiter=',')
-        np.savetxt(new_path+'/latts.csv', X=np.array(experiment.lattice_markov_chain), delimiter=',')
+        ints = np.array(experiment.markov_chain).astype(int)
+        latts = np.array(experiment.lattice_markov_chain).astype(int)
+        np.savetxt(
+            new_path+'/ints.csv',
+            ints,
+            delimiter=',',
+            fmt='%5.0f'
+        )
+        np.savetxt(
+            new_path+'/latts.csv',
+            latts,
+            delimiter=',',
+            fmt='%5.0f'
+        )
 
 
 # Run
 if __name__ == "__main__":
-    path = '/rds/general/user/ead17/ephemeral/ctqw_results/'+ str(config.gamma_mark) + '/' \
-           + str(config.dimension) + '/' + config.lattice_type
+    path = 'results'
     if str(config.lattice_num) not in os.listdir(path):
         os.mkdir(path + '/' + str(config.lattice_num))
 
@@ -120,7 +131,7 @@ if __name__ == "__main__":
         'prob_density': config.dist,
         'coords': config.coords,
         'graph_bounds': config.graph_bounds,
-        'markov_iters': 10000,
+        'markov_iters': 100,
         'markov_comm': 1e-7,
         'cost_choice': 'gauss',
         'path': path + '/' + str(config.lattice_num)
