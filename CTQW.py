@@ -7,6 +7,7 @@
 
 import numpy as np
 from scipy.linalg import expm
+from scipy import sparse
 import graph_functions as gf
 
 
@@ -19,6 +20,17 @@ def prop_comp(adjacency_matrix, gamma):
     :return: np array of unitary matrix propagator
     """
     graph_laplacian = adjacency_matrix - np.diag(np.sum(adjacency_matrix, axis=0))
+    return expm(1j * gamma * graph_laplacian)
+
+
+def prop_comp_sparse (adjacency_matrix, gamma):
+    """
+         sparse method for above prop comp
+    :param adjacency_matrix: scipy sparse version of the adjacency matrix.
+    :param gamma: gamma parameter
+    :return: np array of unitary matrix propagator
+    """
+    graph_laplacian = adjacency_matrix - sparse.diags(np.asarray(adjacency_matrix.sum(axis=0))[0])
     return expm(1j * gamma * graph_laplacian)
 
 

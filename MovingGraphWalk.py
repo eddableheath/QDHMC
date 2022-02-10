@@ -84,12 +84,12 @@ class WalkExperiment:
 
 def multi_run(pars, it):
     """
-        Running a multiprocessed version of the experiment.
+        Running a multi-processed version of the experiment.
     :param pars: parameters for the run
     :param it: current iteration
     :return: writes results to file
     """
-    if it in os.listdir(pars['path']):
+    if str(it) in os.listdir(pars['path']):
         return 1
     else:
         new_path = pars['path'] + '/' + str(it)
@@ -104,25 +104,14 @@ def multi_run(pars, it):
             pars['cost_choice']
         )
         experiment.run()
-        ints = np.array(experiment.markov_chain).astype(int)
-        latts = np.array(experiment.lattice_markov_chain).astype(int)
-        np.savetxt(
-            new_path+'/ints.csv',
-            ints,
-            delimiter=',',
-            fmt='%5.0f'
-        )
-        np.savetxt(
-            new_path+'/latts.csv',
-            latts,
-            delimiter=',',
-            fmt='%5.0f'
-        )
+        np.savetxt(new_path+'/ints.csv', X=np.array(experiment.markov_chain), delimiter=',')
+        np.savetxt(new_path+'/latts.csv', X=np.array(experiment.lattice_markov_chain), delimiter=',')
 
 
 # Run
 if __name__ == "__main__":
-    path = 'results'
+    path = '/rds/general/user/ead17/ephemeral/ctqw_results/'+ str(config.gamma_mark) + '/' \
+           + str(config.dimension) + '/' + config.lattice_type
     if str(config.lattice_num) not in os.listdir(path):
         os.mkdir(path + '/' + str(config.lattice_num))
 
@@ -131,7 +120,7 @@ if __name__ == "__main__":
         'prob_density': config.dist,
         'coords': config.coords,
         'graph_bounds': config.graph_bounds,
-        'markov_iters': 100,
+        'markov_iters': 10000,
         'markov_comm': 1e-7,
         'cost_choice': 'gauss',
         'path': path + '/' + str(config.lattice_num)
