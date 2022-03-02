@@ -47,6 +47,21 @@ def generic_adjacency_matrix(graph_bounds, graph_dimension):
             nx.to_numpy_array(grid_graph))
 
 
+def generic_adjacency_sparse (graph_bounds, graph_dimension):
+    """
+        Outputs a scipy.sparse matrix for the adjacency matrix instead.
+    :param graph_bounds: range of points on the graph
+    :param graph_dimension: dimension of the graph
+    :return: sparse adjacency matrix and coords
+    """
+    grid_graph = nx.grid_graph(dim=[2*graph_bounds +1
+                                    for i in range(graph_dimension)])
+    return ([[node[index] - graph_bounds
+              for index in range(graph_dimension)]
+             for node in nx.nodes(grid_graph)],
+            nx.to_scipy_sparse_matrix(grid_graph))
+
+
 def adj_mat_1d(lattice_basis):
     """
          Given a lattice basis return a one dimensional quantum walk over one of the dimensions.

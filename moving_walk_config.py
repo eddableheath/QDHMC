@@ -51,6 +51,7 @@ coords = np.genfromtxt(
     delimiter=',',
     dtype=None
 )
+coords = coords.astype(int)
 
 # Model parameters -----------------------------------
 gamma_mark = 1

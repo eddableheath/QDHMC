@@ -59,10 +59,9 @@ def run(dimension, graph_bounds, max_gamma, gamma_steps):
         delimiter=','
     )
 
-
 # Run
 if __name__ == "__main__":
-    dim_2_range = 40
+    dim_2_range = 10
     max_g = 2.
     g_steps = 20
 
