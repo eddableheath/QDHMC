@@ -31,7 +31,6 @@ cores = 4
 
 # Lattice parameters ---------------------------------
 dimension = 2
-lattice_type = 'hnf'
 lattice_num = 0
 lattice_basis = np.genfromtxt(
     'run_data/lattice.csv',

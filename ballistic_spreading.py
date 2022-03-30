@@ -16,6 +16,8 @@ import CTQW as qw
 import graph_functions as gf
 import math
 import os
+import multiprocessing
+import networkx as nx
 
 
 def spatial_var(probability_distribution, coords, coord_choice=0):
@@ -59,14 +61,22 @@ def run(dimension, graph_bounds, max_gamma, gamma_steps):
         delimiter=','
     )
 
+
+def compute_adjacency(dimension, graph_bounds):
+    """
+        Compute the adjacency matrix of the graph
+    """
+    g = nx.grid_graph([graph_bounds])
+
+
 # Run
 if __name__ == "__main__":
-    dim_2_range = 10
+    bounds = 9
     max_g = 2.
     g_steps = 20
 
-    for dim in range(3, 8):
-        bounds = (dim_2_range**2)**(1/float(dim)) // 2 - 1
+    for dim in range(2, 8):
+        bounds = 5
         run(dim, int(bounds), max_g, g_steps)
         print(f'done with dim {dim}')
 
