@@ -21,10 +21,11 @@ def potential_energy(basis, point, zero_point_energy):
     """
     lattice_point = np.dot(basis.T, np.around(point))
     point_norm = np.linalg.norm(lattice_point)
-    if abs(point_norm) > 0:
-        return abs(math.log2(point_norm))
-    else:
-        return abs(math.log2(zero_point_energy))
+    return abs(point_norm)
+    # if abs(point_norm) > 0:
+    #     return abs(math.log2(point_norm))
+    # else:
+    #     return abs(math.log2(zero_point_energy))
 
 
 def non_zero_init_point(basis):

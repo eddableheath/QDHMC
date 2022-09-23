@@ -76,19 +76,20 @@ def giants_causeway_graph(basis, shortest_vector):
     ax = fig.add_subplot(111, projection='3d')
 
     # Find range of integers needed
-    int_range = fn.range_calc(basis)
+    int_range = 15
 
     # Find points to be plotted
     int_x, int_y = np.mgrid[-int_range:int_range, -int_range:int_range]
+    # print(int_x)
     integer_points = np.c_[int_x.ravel(), int_y.ravel()]
     x, y = int_x.ravel(), int_y.ravel()
 
     # bar plot dimensions
-    zero_point_energy = np.linalg.norm(np.dot(basis.T, np.array([int_range, int_range])))
+    # zero_point_energy = np.linalg.norm(np.dot(basis.T, np.array([int_range, int_range])))
     width = depth = 1
     z = np.zeros_like(x)
     for i in range(len(z)):
-        z[i] = fn.potential_energy(basis, integer_points[i], zero_point_energy)
+        z[i] = fn.potential_energy(basis, integer_points[i], 0)
     bottom = 3*(z/4)
 
     # colouring
@@ -98,27 +99,28 @@ def giants_causeway_graph(basis, shortest_vector):
     rgba = [cmap((k-minima) / maxima) for k in z]
 
     # shortest vector algebraic solution
+    shortest_vector = np.array([1, 0])
     shortest_ints = np.linalg.solve(basis.T, shortest_vector)
 
     ax.bar3d(x-0.5, y-0.5, bottom, width, depth, z, shade=True, color=rgba)
-    ax.plot3D([-shortest_ints[0], -shortest_ints[0]],
-              [-shortest_ints[1], -shortest_ints[1]],
-              [0, np.max(z)], 'gray')
-    ax.scatter(-shortest_ints[0], -shortest_ints[1], np.max(z))
-    ax.plot3D([shortest_ints[0], shortest_ints[0]],
-              [shortest_ints[1], shortest_ints[1]],
-              [0, np.max(z)], 'gray')
-    ax.scatter(shortest_ints[0], shortest_ints[1], np.max(z))
+    # ax.plot3D([-shortest_ints[0], -shortest_ints[0]],
+    #           [-shortest_ints[1], -shortest_ints[1]],
+    #           [0, np.max(z)], 'gray')
+    # ax.scatter(-shortest_ints[0], -shortest_ints[1], np.max(z))
+    # ax.plot3D([shortest_ints[0], shortest_ints[0]],
+    #           [shortest_ints[1], shortest_ints[1]],
+    #           [0, np.max(z)], 'gray')
+    # ax.scatter(shortest_ints[0], shortest_ints[1], np.max(z))
     plt.show()
 
 
 # testing
 if __name__ == "__main__":
-    latt_hnf = np.array([[32, 0], [-6, 1]])
-    latt_lll = np.array([[2, 5], [-6, 1]])
-    sv = np.array([2, 5])
-    # two_dimensional_integer_tiling(lattice, sv)
-    giants_causeway_graph(latt_hnf, sv)
-    giants_causeway_graph(latt_lll, sv)
+    for i in range(32):
+        b = np.genfromtxt(f'Lattices/2/{str(i)}_1.csv', delimiter=',', dtype=None)
+        print(b)
+        giants_causeway_graph(b, 0)
+        input('press enter to continue...')
+
 
 
