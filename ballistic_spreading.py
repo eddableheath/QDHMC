@@ -69,6 +69,62 @@ def compute_adjacency(dimension, graph_bounds):
     g = nx.grid_graph([graph_bounds])
 
 
+def partial_sum(eigs, start_vecs, gamma):
+    """
+        Compute the partial sum for the probability density:
+
+            \sum_{s}e^{-i\gamma\lambda_s}V_{ks}
+
+        arguments:  - eigs, eigenvalues of the graph Laplacian - (m, )-ndarray float
+                    - start_vecs, starting row of eigenvectors of the graph Laplacian - (m, )-ndarray float
+                    - gamma, single system parameter - float
+        returns:    - partial sum mentioned above
+    """
+    s = 0
+    for eig_ind in range(eigs.size[0]):
+        s += np.exp(-1j*gamma, eigs[eig_ind]) * start_vecs[eig_ind]
+    return s
+
+
+def probability_density(point_index, start_index, vecs, eigs, gamma):
+    """
+        Compute the full probability density for a particular point given a starting index.
+
+        arguments:  - point_index, point for density - int
+                    - start_index, index for the start of the walk - int
+                    - vecs, eigenvectors of the graph Laplacian - (m, )-ndarray float
+                    - eigs, eigenvalues of the graph Laplacian - (m, )-ndarray float
+                    - gamma, single system parameter - float
+        returns:    - probability density
+    """
+    return np.abs(partial_sum(eigs, vecs[start_index], gamma) * np.sum(vecs[point_index]))**2
+
+
+def spatial_var(coords, vecs, eigs, gamma, start_index=0):
+    """
+        Compute the spatial variance for a given distribution over the integer lattice, based purely on one dimension
+        (sufficient due to symmetry):
+
+            sigma_x = <x^2> - <x>^2,       <x> = sum_{j,k=1}^{N_j, N_i} rho_{jk}x_{jk}
+
+    :param probability_distribution: probability distribution over graph, real-(m, )-ndarray
+    :param coords: coordinate map from graph to integer lattice, list of lists of ints
+    :param coord_choice: coordinate to choice to compute variance over (optional, default=0), int
+    :return: spatial variance, float
+    """
+    if start_index > len(coords[0]):
+        print('Coordinate choice greater than problem dimension, defaulting to 0')
+        coord_choice = 0
+    coord_vals = np.asarray([coord[coord_choice] for coord in coords])
+    prob_dens = np.zeros_like(eigs)
+    for i in range(eigs.size[0]):
+        prob_dens[i] = probability_density(i, start_index, vecs, eigs, gamma)
+    return np.sum(prob_dens * (coord_vals**2)) - np.sum(prob_dens * coord_vals)**2
+
+
+
+
+
 # Run
 if __name__ == "__main__":
     bounds = 9
